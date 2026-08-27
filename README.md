@@ -26,10 +26,10 @@ Models predict confidence scores across 12 pathologies, evaluated via **Macro-Av
 
 | Phase | Description | Status | Deliverables |
 | :--- | :--- | :---: | :--- |
-| **Phase 1** | **Exploratory Data Analysis & Validation** | ✅ Completed | • [`src/eda_analysis.py`](file:///d:/knee_multimodel_ai/src/eda_analysis.py)<br>• [`notebooks/01_eda.ipynb`](file:///d:/knee_multimodel_ai/notebooks/01_eda.ipynb)<br>• 5-Fold Stratified Split: [`data/train_folds.csv`](file:///d:/knee_multimodel_ai/data/train_folds.csv) |
-| **Phase 2** | **Multilingual Report NLP & Weak Supervision** | ✅ Completed | • [`src/report_extractor.py`](file:///d:/knee_multimodel_ai/src/report_extractor.py)<br>• [`notebooks/02_report_nlp_extractor.ipynb`](file:///d:/knee_multimodel_ai/notebooks/02_report_nlp_extractor.ipynb)<br>• Pseudo-Labeled Dataset ($N=4,407$): [`data/train_pseudo_labeled.csv`](file:///d:/knee_multimodel_ai/data/train_pseudo_labeled.csv) |
-| **Phase 3** | **MRI DICOM & Image Preprocessing Pipeline** | ⏳ Next | • Multi-series volume loader (`Sagittal`, `Coronal`, `Axial`)<br>• PyTorch Dataset & DataLoaders with 2.5D/3D augmentations |
-| **Phase 4** | **Multi-View Vision Model Training** | ⏳ Upcoming | • Multi-sequence backbones (ConvNeXt / EfficientNet / Swin)<br>• 5-Fold Cross-Validation & Macro-AUC Optimization |
+| **Phase 1** | **Exploratory Data Analysis & Validation** | ✅ Completed | • [`src/eda_analysis.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/eda_analysis.py)<br>• [`notebooks/01_eda.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/01_eda.ipynb)<br>• 5-Fold Stratified Split: [`data/train_folds.csv`](file:///d:/Projects_v1/knee_multimodel_ai/data/train_folds.csv) |
+| **Phase 2** | **Multilingual Report NLP & Weak Supervision** | ✅ Completed | • [`src/report_extractor.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/report_extractor.py)<br>• [`notebooks/02_report_nlp_extractor.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/02_report_nlp_extractor.ipynb)<br>• Pseudo-Labeled Dataset ($N=4,407$): [`data/train_pseudo_labeled.csv`](file:///d:/Projects_v1/knee_multimodel_ai/data/train_pseudo_labeled.csv) |
+| **Phase 3** | **MRI DICOM & Image Preprocessing Pipeline** | ✅ Completed | • Multi-sequence volume loader & preprocessor: [`src/mri_preprocessor.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/mri_preprocessor.py)<br>• Multi-view PyTorch Dataset & DataLoaders: [`src/dataset.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/dataset.py)<br>• Interactive Pipeline Notebook: [`notebooks/03_mri_preprocessing_dataset.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/03_mri_preprocessing_dataset.ipynb)<br>• Automated Verification Test Suite: [`src/test_pipeline.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/test_pipeline.py) |
+| **Phase 4** | **Multi-View Vision Model Training** | ⏳ Next | • Multi-sequence backbones (ConvNeXt / EfficientNet / Swin)<br>• 5-Fold Cross-Validation & Macro-AUC Optimization |
 | **Phase 5** | **Multimodal Integration & Distillation** | ⏳ Upcoming | • Vision-Language contrastive alignment / feature distillation |
 | **Phase 6** | **Ensembling & Submission Pipeline** | ⏳ Upcoming | • Model blending, probability calibration, submission file generator |
 
@@ -78,6 +78,33 @@ Models predict confidence scores across 12 pathologies, evaluated via **Macro-Av
 
 ---
 
+## 🩻 Phase 3 Volumetric Preprocessing & PyTorch Pipeline
+
+```
+Raw DICOM Series (Sagittal, Coronal, Axial)
+   │
+   ▼
+[SeriesSelector] ──> Ranks sequences via (2*Fluid_Sensitive + 1*Fat_Suppression)
+   │
+   ▼
+[DICOMReader]    ──> Parses geometry, normalizes slope/intercept & sorts by z-plane
+   │
+   ▼
+[VolumeResampler]──> Percentile windowing [0, 1] + Resamples to [D=16, H=224, W=224]
+   │
+   ▼
+[3D Augmentation]──> Plane-safe flips, random affine (±12°), gamma, noise, cutout
+   │
+   ▼
+[KneeMRIDataset] ──> Batch Tensors: Image [B, 3, 16, 224, 224] | Targets [B, 12]
+```
+
+- **Multi-View Representation**: Provides tri-plane volume tensors of shape `[3, Depth, Height, Width]` where Channel 0 = Sagittal, Channel 1 = Coronal, Channel 2 = Axial.
+- **3D Geometric Consistency**: Augmentations apply identical affine transformations across all slices of a single sequence to preserve anatomical continuity.
+- **Cross-Validation Factory**: `create_dataloaders()` cleanly splits studies by fold index (`val_fold=0..4`), supporting both hard gold targets and soft continuous pseudo-labels.
+
+---
+
 ## 📁 Repository Structure
 
 ```text
@@ -88,14 +115,18 @@ Models predict confidence scores across 12 pathologies, evaluated via **Macro-Av
 │   └── train_pseudo_labeled.csv  # 4,407 studies with calibrated NLP pseudo-labels
 ├── notebooks/
 │   ├── 01_eda.ipynb              # Interactive Exploratory Data Analysis
-│   └── 02_report_nlp_extractor.ipynb # Multilingual NLP Extractor & Benchmark
+│   ├── 02_report_nlp_extractor.ipynb # Multilingual NLP Extractor & Benchmark
+│   └── 03_mri_preprocessing_dataset.ipynb # Multi-View Preprocessing & DataLoader Demo
 ├── outputs/
 │   ├── eda_plots/                # High-resolution EDA visualization plots
 │   └── nlp_eval/                 # NLP benchmark metrics on Gold Standard
 ├── src/
 │   ├── eda_analysis.py           # Automated EDA batch processor
 │   ├── validation.py             # Iterative multi-label stratified fold partitioner
-│   └── report_extractor.py       # Multilingual NLP extractor & weak supervision
+│   ├── report_extractor.py       # Multilingual NLP extractor & weak supervision
+│   ├── mri_preprocessor.py       # DICOM parsing, windowing, resampler & series selector
+│   ├── dataset.py                # Multi-view PyTorch Dataset & 3D volumetric augmentations
+│   └── test_pipeline.py          # Automated verification test suite
 └── requirements.txt              # Python dependencies
 ```
 
@@ -118,5 +149,10 @@ python src/report_extractor.py
 python src/validation.py
 ```
 
-### 4. Launch Interactive Notebooks:
-Open [`notebooks/01_eda.ipynb`](file:///d:/knee_multimodel_ai/notebooks/01_eda.ipynb) or [`notebooks/02_report_nlp_extractor.ipynb`](file:///d:/knee_multimodel_ai/notebooks/02_report_nlp_extractor.ipynb) in your Jupyter/IDE environment.
+### 4. Run Phase 3 Pipeline Verification Test Suite:
+```bash
+python src/test_pipeline.py
+```
+
+### 5. Launch Interactive Notebooks:
+Open [`notebooks/01_eda.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/01_eda.ipynb), [`notebooks/02_report_nlp_extractor.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/02_report_nlp_extractor.ipynb), or [`notebooks/03_mri_preprocessing_dataset.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/03_mri_preprocessing_dataset.ipynb) in your Jupyter/IDE environment.
