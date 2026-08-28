@@ -53,8 +53,8 @@ def run_tests():
     # Test 1: Synthetic DICOM Generation & DICOMReader
     # -------------------------------------------------------------
     print("\n[Test 1/5] Testing DICOM Generation & Sorter Reader...")
-    study_id = "test_study_001"
-    series_id = "test_series_sag_001"
+    study_id = "1.2.826.0.1.3680043.8.498.999901"
+    series_id = "1.2.826.0.1.3680043.8.498.999902"
     series_dir = SyntheticDICOMGenerator.save_mock_dicom_series(
         output_dir=temp_dicom_root,
         study_uid=study_id,

@@ -29,8 +29,8 @@ Models predict confidence scores across 12 pathologies, evaluated via **Macro-Av
 | **Phase 1** | **Exploratory Data Analysis & Validation** | ✅ Completed | • [`src/eda_analysis.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/eda_analysis.py)<br>• [`notebooks/01_eda.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/01_eda.ipynb)<br>• 5-Fold Stratified Split: [`data/train_folds.csv`](file:///d:/Projects_v1/knee_multimodel_ai/data/train_folds.csv) |
 | **Phase 2** | **Multilingual Report NLP & Weak Supervision** | ✅ Completed | • [`src/report_extractor.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/report_extractor.py)<br>• [`notebooks/02_report_nlp_extractor.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/02_report_nlp_extractor.ipynb)<br>• Pseudo-Labeled Dataset ($N=4,407$): [`data/train_pseudo_labeled.csv`](file:///d:/Projects_v1/knee_multimodel_ai/data/train_pseudo_labeled.csv) |
 | **Phase 3** | **MRI DICOM & Image Preprocessing Pipeline** | ✅ Completed | • Multi-sequence volume loader & preprocessor: [`src/mri_preprocessor.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/mri_preprocessor.py)<br>• Multi-view PyTorch Dataset & DataLoaders: [`src/dataset.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/dataset.py)<br>• Interactive Pipeline Notebook: [`notebooks/03_mri_preprocessing_dataset.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/03_mri_preprocessing_dataset.ipynb)<br>• Automated Verification Test Suite: [`src/test_pipeline.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/test_pipeline.py) |
-| **Phase 4** | **Multi-View Vision Model Training** | ⏳ Next | • Multi-sequence backbones (ConvNeXt / EfficientNet / Swin)<br>• 5-Fold Cross-Validation & Macro-AUC Optimization |
-| **Phase 5** | **Multimodal Integration & Distillation** | ⏳ Upcoming | • Vision-Language contrastive alignment / feature distillation |
+| **Phase 4** | **Multi-View Vision Model Training** | ✅ Completed | • Multi-view deep learning backbones: [`src/models.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/models.py)<br>• Multi-label soft/focal loss functions: [`src/losses.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/losses.py)<br>• Training & evaluation engine: [`src/trainer.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/trainer.py)<br>• Model test suite: [`src/test_models.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/test_models.py)<br>• Interactive Training Notebook: [`notebooks/04_model_training_evaluation.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/04_model_training_evaluation.ipynb) |
+| **Phase 5** | **Multimodal Integration & Distillation** | ⏳ Next | • Vision-Language contrastive alignment / feature distillation |
 | **Phase 6** | **Ensembling & Submission Pipeline** | ⏳ Upcoming | • Model blending, probability calibration, submission file generator |
 
 ---
@@ -101,7 +101,21 @@ Raw DICOM Series (Sagittal, Coronal, Axial)
 
 - **Multi-View Representation**: Provides tri-plane volume tensors of shape `[3, Depth, Height, Width]` where Channel 0 = Sagittal, Channel 1 = Coronal, Channel 2 = Axial.
 - **3D Geometric Consistency**: Augmentations apply identical affine transformations across all slices of a single sequence to preserve anatomical continuity.
-- **Cross-Validation Factory**: `create_dataloaders()` cleanly splits studies by fold index (`val_fold=0..4`), supporting both hard gold targets and soft continuous pseudo-labels.
+
+---
+
+## 🧠 Phase 4 Multi-View Vision Architecture & Training Engine
+
+```
+Sagittal Volume [B, 1, D, H, W] ──> [Sag Encoder] ──> [Slice Attention] ──┐
+Coronal Volume  [B, 1, D, H, W] ──> [Cor Encoder] ──> [Slice Attention] ──┼─> [Cross-Plane Fusion] ──> [Classifier] ──> Logits [B, 12]
+Axial Volume    [B, 1, D, H, W] ──> [Ax  Encoder] ──> [Slice Attention] ──┘
+```
+
+- **Pathology-Aware Slice Attention**: Learns softmax-normalized attention weights $\alpha \in \mathbb{R}^D$ across the 16 slices per plane, focusing the network on the exact slices containing lesions (e.g. mid-sagittal for ACL, coronal joint line for MCL).
+- **Cross-Plane Gated Fusion**: Projects concatenated orthogonal features through a gated linear unit (GLU) with residual shortcuts.
+- **Unified Multi-Label Soft BCE & Asymmetric Loss**: Supports continuous weak pseudo-probabilities while upweighting gold-standard ground truth cases ($w_{gold} = 2.0$).
+- **Trainer & Metric Tracker**: Implements CosineAnnealing scheduling, gradient clipping, early stopping, and automatic checkpointing of best validation Macro-AUC models (`models/best_model_fold{K}.pt`).
 
 ---
 
@@ -113,10 +127,13 @@ Raw DICOM Series (Sagittal, Coronal, Axial)
 │   ├── train_series.csv          # Study to series mapping & anatomical planes
 │   ├── train_folds.csv           # Leak-free 5-fold multi-label stratified split
 │   └── train_pseudo_labeled.csv  # 4,407 studies with calibrated NLP pseudo-labels
+├── models/
+│   └── best_model_fold0.pt       # Checkpoint of best model weights
 ├── notebooks/
 │   ├── 01_eda.ipynb              # Interactive Exploratory Data Analysis
 │   ├── 02_report_nlp_extractor.ipynb # Multilingual NLP Extractor & Benchmark
-│   └── 03_mri_preprocessing_dataset.ipynb # Multi-View Preprocessing & DataLoader Demo
+│   ├── 03_mri_preprocessing_dataset.ipynb # Multi-View Preprocessing & DataLoader Demo
+│   └── 04_model_training_evaluation.ipynb # Multi-View Training & Evaluation Demo
 ├── outputs/
 │   ├── eda_plots/                # High-resolution EDA visualization plots
 │   └── nlp_eval/                 # NLP benchmark metrics on Gold Standard
@@ -126,7 +143,11 @@ Raw DICOM Series (Sagittal, Coronal, Axial)
 │   ├── report_extractor.py       # Multilingual NLP extractor & weak supervision
 │   ├── mri_preprocessor.py       # DICOM parsing, windowing, resampler & series selector
 │   ├── dataset.py                # Multi-view PyTorch Dataset & 3D volumetric augmentations
-│   └── test_pipeline.py          # Automated verification test suite
+│   ├── models.py                 # MultiViewKneeModel & SliceAttentionPooling
+│   ├── losses.py                 # SoftBCEWithLogitsLoss & AsymmetricLoss
+│   ├── trainer.py                # ModelTrainer, calculate_metrics & evaluate_model
+│   ├── test_pipeline.py          # Phase 3 automated verification test suite
+│   └── test_models.py            # Phase 4 automated verification test suite
 └── requirements.txt              # Python dependencies
 ```
 
@@ -134,25 +155,35 @@ Raw DICOM Series (Sagittal, Coronal, Axial)
 
 ## 🚀 Quickstart & Reproduction
 
-### 1. Run Automated EDA Analysis:
+### 1. Run Complete System Health Check (Phases 1 to 4 in One Command):
+```bash
+python src/verify_all.py
+```
+
+### 2. Run Automated EDA Analysis:
 ```bash
 python src/eda_analysis.py
 ```
 
-### 2. Run Multilingual NLP Extractor & Generate Pseudo-Labels:
+### 3. Run Multilingual NLP Extractor & Generate Pseudo-Labels:
 ```bash
 python src/report_extractor.py
 ```
 
-### 3. Regenerate Cross-Validation Folds:
+### 4. Regenerate Cross-Validation Folds:
 ```bash
 python src/validation.py
 ```
 
-### 4. Run Phase 3 Pipeline Verification Test Suite:
+### 5. Run Phase 3 Pipeline Verification Test Suite:
 ```bash
 python src/test_pipeline.py
 ```
 
-### 5. Launch Interactive Notebooks:
-Open [`notebooks/01_eda.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/01_eda.ipynb), [`notebooks/02_report_nlp_extractor.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/02_report_nlp_extractor.ipynb), or [`notebooks/03_mri_preprocessing_dataset.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/03_mri_preprocessing_dataset.ipynb) in your Jupyter/IDE environment.
+### 6. Run Phase 4 Vision Model & Training Test Suite:
+```bash
+python src/test_models.py
+```
+
+### 7. Launch Interactive Notebooks:
+Open any of the notebooks in `notebooks/` (`01_eda.ipynb`, `02_report_nlp_extractor.ipynb`, `03_mri_preprocessing_dataset.ipynb`, `04_model_training_evaluation.ipynb`) in your Jupyter/IDE environment.
