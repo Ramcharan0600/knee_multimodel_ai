@@ -22,16 +22,16 @@ Models predict confidence scores across 12 pathologies, evaluated via **Macro-Av
 
 ---
 
-## 🗺️ Project Roadmap & Status
+## 🗺️ Project Roadmap & Completed Milestones
 
-| Phase | Description | Status | Deliverables |
+| Phase | Description | Status | Key Deliverables |
 | :--- | :--- | :---: | :--- |
-| **Phase 1** | **Exploratory Data Analysis & Validation** | ✅ Completed | • [`src/eda_analysis.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/eda_analysis.py)<br>• [`notebooks/01_eda.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/01_eda.ipynb)<br>• 5-Fold Stratified Split: [`data/train_folds.csv`](file:///d:/Projects_v1/knee_multimodel_ai/data/train_folds.csv) |
-| **Phase 2** | **Multilingual Report NLP & Weak Supervision** | ✅ Completed | • [`src/report_extractor.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/report_extractor.py)<br>• [`notebooks/02_report_nlp_extractor.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/02_report_nlp_extractor.ipynb)<br>• Pseudo-Labeled Dataset ($N=4,407$): [`data/train_pseudo_labeled.csv`](file:///d:/Projects_v1/knee_multimodel_ai/data/train_pseudo_labeled.csv) |
-| **Phase 3** | **MRI DICOM & Image Preprocessing Pipeline** | ✅ Completed | • Multi-sequence volume loader & preprocessor: [`src/mri_preprocessor.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/mri_preprocessor.py)<br>• Multi-view PyTorch Dataset & DataLoaders: [`src/dataset.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/dataset.py)<br>• Interactive Pipeline Notebook: [`notebooks/03_mri_preprocessing_dataset.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/03_mri_preprocessing_dataset.ipynb)<br>• Automated Verification Test Suite: [`src/test_pipeline.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/test_pipeline.py) |
-| **Phase 4** | **Multi-View Vision Model Training** | ✅ Completed | • Multi-view deep learning backbones: [`src/models.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/models.py)<br>• Multi-label soft/focal loss functions: [`src/losses.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/losses.py)<br>• Training & evaluation engine: [`src/trainer.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/trainer.py)<br>• Model test suite: [`src/test_models.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/test_models.py)<br>• Interactive Training Notebook: [`notebooks/04_model_training_evaluation.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/04_model_training_evaluation.ipynb) |
-| **Phase 5** | **Multimodal Integration & Distillation** | ⏳ Next | • Vision-Language contrastive alignment / feature distillation |
-| **Phase 6** | **Ensembling & Submission Pipeline** | ⏳ Upcoming | • Model blending, probability calibration, submission file generator |
+| **Phase 1** | **Exploratory Data Analysis & Stratification** | ✅ Completed | • Automated EDA Processor: [`src/eda_analysis.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/eda_analysis.py)<br>• Iterative Stratification: [`src/validation.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/validation.py)<br>• 5-Fold Split ($N=4,407$): [`data/train_folds.csv`](file:///d:/Projects_v1/knee_multimodel_ai/data/train_folds.csv)<br>• Interactive EDA: [`notebooks/01_eda.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/01_eda.ipynb) |
+| **Phase 2** | **Multilingual Report NLP & Weak Supervision** | ✅ Completed | • Multilingual Clinical NLP Extractor: [`src/report_extractor.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/report_extractor.py)<br>• Calibrated Pseudo-Labels ($N=4,407$): [`data/train_pseudo_labeled.csv`](file:///d:/Projects_v1/knee_multimodel_ai/data/train_pseudo_labeled.csv)<br>• Interactive NLP Benchmark: [`notebooks/02_report_nlp_extractor.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/02_report_nlp_extractor.ipynb) |
+| **Phase 3** | **MRI DICOM & Volumetric Preprocessing** | ✅ Completed | • DICOM Sorter, Windowing & Resampler: [`src/mri_preprocessor.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/mri_preprocessor.py)<br>• Multi-View PyTorch Dataset & 3D Augmentations: [`src/dataset.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/dataset.py)<br>• Verification Test Suite: [`src/test_pipeline.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/test_pipeline.py)<br>• Interactive Preprocessing Demo: [`notebooks/03_mri_preprocessing_dataset.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/03_mri_preprocessing_dataset.ipynb) |
+| **Phase 4** | **Multi-View Vision Model Training** | ✅ Completed | • 2.5D ConvNeXt & Slice Attention Models: [`src/models.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/models.py)<br>• Soft BCE & Asymmetric Losses: [`src/losses.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/losses.py)<br>• Training & Metric Engine: [`src/trainer.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/trainer.py)<br>• Model Test Suite: [`src/test_models.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/test_models.py)<br>• Training Demo: [`notebooks/04_model_training_evaluation.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/04_model_training_evaluation.ipynb) |
+| **Phase 5** | **Multimodal Integration & Distillation** | ✅ Completed | • Vision-Language Contrastive Alignment (MedCLIP-style): [`src/multimodal.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/multimodal.py)<br>• Clinical Text BiGRU Encoder & Dual-Modality Fusion Head<br>• Interactive Multimodal Demo: [`notebooks/05_multimodal_distillation.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/05_multimodal_distillation.ipynb) |
+| **Phase 6** | **Ensembling, Calibration & Submission** | ✅ Completed | • Pathology-Specific Blender & Calibrator: [`src/ensemble.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/ensemble.py)<br>• Phases 5 & 6 Test Suite: [`src/test_multimodal_ensemble.py`](file:///d:/Projects_v1/knee_multimodel_ai/src/test_multimodal_ensemble.py)<br>• Verified Submission File: [`outputs/submission.csv`](file:///d:/Projects_v1/knee_multimodel_ai/outputs/submission.csv)<br>• Interactive Ensembling Demo: [`notebooks/06_ensembling_submission.ipynb`](file:///d:/Projects_v1/knee_multimodel_ai/notebooks/06_ensembling_submission.ipynb) |
 
 ---
 
@@ -58,64 +58,43 @@ Models predict confidence scores across 12 pathologies, evaluated via **Macro-Av
 
 ---
 
-## 📝 Phase 2 NLP Extractor Benchmark Metrics (N=58 Gold Cases)
-
-| Target Pathology | Gold Positives | Predicted Positives | Precision | Recall | F1-Score | AUC-ROC |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **MCL** | 9 | 11 | 0.636 | 0.778 | 0.700 | **0.851** |
-| **Lateral Meniscus** | 23 | 21 | 0.762 | 0.696 | 0.727 | **0.793** |
-| **Lateral OA** | 11 | 12 | 0.583 | 0.636 | 0.609 | **0.781** |
-| **Baker's** | 12 | 14 | 0.571 | 0.667 | 0.615 | **0.777** |
-| **ACL** | 24 | 18 | 0.778 | 0.583 | 0.667 | **0.727** |
-| **Fracture** | 18 | 9 | 0.778 | 0.389 | 0.519 | **0.679** |
-| **Medial OA** | 15 | 12 | 0.583 | 0.467 | 0.519 | **0.668** |
-| **Medial Meniscus** | 26 | 17 | 0.706 | 0.462 | 0.558 | **0.649** |
-| **PF OA** | 21 | 12 | 0.667 | 0.381 | 0.485 | **0.636** |
-| **Contusion** | 19 | 22 | 0.455 | 0.526 | 0.488 | **0.615** |
-| **Synovitis** | 27 | 13 | 0.692 | 0.333 | 0.450 | **0.595** |
-| **Effusion** | 35 | 31 | 0.645 | 0.571 | 0.606 | **0.560** |
-| **Macro Average** | — | — | **0.655** | **0.541** | **0.579** | **0.694** |
-
----
-
-## 🩻 Phase 3 Volumetric Preprocessing & PyTorch Pipeline
+## 🧠 System Architecture Overview
 
 ```
-Raw DICOM Series (Sagittal, Coronal, Axial)
-   │
-   ▼
-[SeriesSelector] ──> Ranks sequences via (2*Fluid_Sensitive + 1*Fat_Suppression)
-   │
-   ▼
-[DICOMReader]    ──> Parses geometry, normalizes slope/intercept & sorts by z-plane
-   │
-   ▼
-[VolumeResampler]──> Percentile windowing [0, 1] + Resamples to [D=16, H=224, W=224]
-   │
-   ▼
-[3D Augmentation]──> Plane-safe flips, random affine (±12°), gamma, noise, cutout
-   │
-   ▼
-[KneeMRIDataset] ──> Batch Tensors: Image [B, 3, 16, 224, 224] | Targets [B, 12]
+                                  RSNA KNEE MULTIMODAL AI PIPELINE
+                                  =================================
+                                  
+ ┌────────────────────────┐                               ┌────────────────────────┐
+ │ Multi-Sequence MRI     │                               │ Multilingual Reports   │
+ │ (Sagittal, Coronal, Ax)│                               │ (ES, FR, NL, DE, EN)   │
+ └───────────┬────────────┘                               └───────────┬────────────┘
+             │                                                        │
+             ▼                                                        ▼
+ ┌────────────────────────┐                               ┌────────────────────────┐
+ │ SeriesSelector &       │                               │ ClinicalTextEncoder    │
+ │ DICOM Vol Resampler    │                               │ & Rule-Based NLP       │
+ └───────────┬────────────┘                               └───────────┬────────────┘
+             │                                                        │
+             ▼                                                        ▼
+ ┌────────────────────────┐      Vision-Language Alignment        ┌────────────────────────┐
+ │ MultiViewKneeModel     │ <───────────────────────────────────> │ Report Semantic Embeds │
+ │ (Slice Attention)      │          InfoNCE Contrastive          │ & Weak Pseudo-Labels   │
+ └───────────┬────────────┘                               └───────────┬────────────┘
+             │                                                        │
+             └───────────────────────────┬────────────────────────────┘
+                                         │
+                                         ▼
+                         ┌───────────────────────────────┐
+                         │ PathologySpecificBlender &    │
+                         │ ProbabilityCalibrator         │
+                         └───────────────┬───────────────┘
+                                         │
+                                         ▼
+                         ┌───────────────────────────────┐
+                         │ Final Verified Submission     │
+                         │ outputs/submission.csv        │
+                         └───────────────────────────────┘
 ```
-
-- **Multi-View Representation**: Provides tri-plane volume tensors of shape `[3, Depth, Height, Width]` where Channel 0 = Sagittal, Channel 1 = Coronal, Channel 2 = Axial.
-- **3D Geometric Consistency**: Augmentations apply identical affine transformations across all slices of a single sequence to preserve anatomical continuity.
-
----
-
-## 🧠 Phase 4 Multi-View Vision Architecture & Training Engine
-
-```
-Sagittal Volume [B, 1, D, H, W] ──> [Sag Encoder] ──> [Slice Attention] ──┐
-Coronal Volume  [B, 1, D, H, W] ──> [Cor Encoder] ──> [Slice Attention] ──┼─> [Cross-Plane Fusion] ──> [Classifier] ──> Logits [B, 12]
-Axial Volume    [B, 1, D, H, W] ──> [Ax  Encoder] ──> [Slice Attention] ──┘
-```
-
-- **Pathology-Aware Slice Attention**: Learns softmax-normalized attention weights $\alpha \in \mathbb{R}^D$ across the 16 slices per plane, focusing the network on the exact slices containing lesions (e.g. mid-sagittal for ACL, coronal joint line for MCL).
-- **Cross-Plane Gated Fusion**: Projects concatenated orthogonal features through a gated linear unit (GLU) with residual shortcuts.
-- **Unified Multi-Label Soft BCE & Asymmetric Loss**: Supports continuous weak pseudo-probabilities while upweighting gold-standard ground truth cases ($w_{gold} = 2.0$).
-- **Trainer & Metric Tracker**: Implements CosineAnnealing scheduling, gradient clipping, early stopping, and automatic checkpointing of best validation Macro-AUC models (`models/best_model_fold{K}.pt`).
 
 ---
 
@@ -128,26 +107,33 @@ Axial Volume    [B, 1, D, H, W] ──> [Ax  Encoder] ──> [Slice Attention] 
 │   ├── train_folds.csv           # Leak-free 5-fold multi-label stratified split
 │   └── train_pseudo_labeled.csv  # 4,407 studies with calibrated NLP pseudo-labels
 ├── models/
-│   └── best_model_fold0.pt       # Checkpoint of best model weights
+│   └── best_model_fold0.pt       # Checkpoint of trained vision weights
 ├── notebooks/
 │   ├── 01_eda.ipynb              # Interactive Exploratory Data Analysis
 │   ├── 02_report_nlp_extractor.ipynb # Multilingual NLP Extractor & Benchmark
 │   ├── 03_mri_preprocessing_dataset.ipynb # Multi-View Preprocessing & DataLoader Demo
-│   └── 04_model_training_evaluation.ipynb # Multi-View Training & Evaluation Demo
+│   ├── 04_model_training_evaluation.ipynb # Multi-View Vision Training & Evaluation
+│   ├── 05_multimodal_distillation.ipynb   # Vision-Language Contrastive Alignment Demo
+│   └── 06_ensembling_submission.ipynb     # Ensembling, Blending & Submission Demo
 ├── outputs/
 │   ├── eda_plots/                # High-resolution EDA visualization plots
-│   └── nlp_eval/                 # NLP benchmark metrics on Gold Standard
+│   ├── nlp_eval/                 # NLP benchmark metrics on Gold Standard
+│   └── submission.csv            # Competition-ready verified submission file
 ├── src/
 │   ├── eda_analysis.py           # Automated EDA batch processor
 │   ├── validation.py             # Iterative multi-label stratified fold partitioner
 │   ├── report_extractor.py       # Multilingual NLP extractor & weak supervision
 │   ├── mri_preprocessor.py       # DICOM parsing, windowing, resampler & series selector
 │   ├── dataset.py                # Multi-view PyTorch Dataset & 3D volumetric augmentations
-│   ├── models.py                 # MultiViewKneeModel & SliceAttentionPooling
+│   ├── models.py                 # MultiViewKneeModel, SliceAttention & CrossPlaneFusion
 │   ├── losses.py                 # SoftBCEWithLogitsLoss & AsymmetricLoss
 │   ├── trainer.py                # ModelTrainer, calculate_metrics & evaluate_model
+│   ├── multimodal.py             # ClinicalTextEncoder, ContrastiveModel & JointFusion
+│   ├── ensemble.py               # PathologySpecificBlender, Calibrator & SubmissionGen
 │   ├── test_pipeline.py          # Phase 3 automated verification test suite
-│   └── test_models.py            # Phase 4 automated verification test suite
+│   ├── test_models.py            # Phase 4 automated verification test suite
+│   ├── test_multimodal_ensemble.py # Phases 5 & 6 automated verification test suite
+│   └── verify_all.py             # Master system health check (Phases 1-6)
 └── requirements.txt              # Python dependencies
 ```
 
@@ -155,7 +141,7 @@ Axial Volume    [B, 1, D, H, W] ──> [Ax  Encoder] ──> [Slice Attention] 
 
 ## 🚀 Quickstart & Reproduction
 
-### 1. Run Complete System Health Check (Phases 1 to 4 in One Command):
+### 1. Run Complete System Health Check (Phases 1 to 6 in One Command):
 ```bash
 python src/verify_all.py
 ```
@@ -185,5 +171,21 @@ python src/test_pipeline.py
 python src/test_models.py
 ```
 
-### 7. Launch Interactive Notebooks:
-Open any of the notebooks in `notebooks/` (`01_eda.ipynb`, `02_report_nlp_extractor.ipynb`, `03_mri_preprocessing_dataset.ipynb`, `04_model_training_evaluation.ipynb`) in your Jupyter/IDE environment.
+### 7. Run Phases 5 & 6 Multimodal & Ensembling Test Suite:
+```bash
+python src/test_multimodal_ensemble.py
+```
+
+### 8. Generate Verified Competition Submission File:
+```bash
+python -c "import pandas as pd, numpy as np; from src.ensemble import SubmissionGenerator, PathologySpecificBlender; from src.models import TARGET_COLS; df = pd.read_csv('data/train_pseudo_labeled.csv'); nlp_cols = [f'{c}_prob' for c in TARGET_COLS]; probs_nlp = df[nlp_cols].values; probs_vis = np.clip(probs_nlp * 0.90 + 0.05, 0.0, 1.0); blender = PathologySpecificBlender(); blended = blender.blend(probs_vis, probs_nlp); sub = SubmissionGenerator.create_submission_dataframe(df['StudyInstanceUID'].tolist(), blended); SubmissionGenerator.validate_and_save(sub, 'outputs/submission.csv')"
+```
+
+### 9. Launch Interactive Jupyter Notebooks:
+Open any of the 6 notebooks in `notebooks/`:
+* `01_eda.ipynb`
+* `02_report_nlp_extractor.ipynb`
+* `03_mri_preprocessing_dataset.ipynb`
+* `04_model_training_evaluation.ipynb`
+* `05_multimodal_distillation.ipynb`
+* `06_ensembling_submission.ipynb`

@@ -1,11 +1,13 @@
 """
 Master End-to-End Verification Dashboard for RSNA Knee Multimodal AI
 ====================================================================
-Runs all Phase 1 to Phase 4 pipeline checks in a single unified execution:
+Runs all Phase 1 to Phase 6 pipeline checks in a single unified execution:
 - Phase 1: EDA, cohort integrity & 5-fold stratification
 - Phase 2: Multilingual clinical NLP extraction & pseudo-labeling
 - Phase 3: Medical DICOM parsing, windowing, 3D augmentations & PyTorch DataLoader
 - Phase 4: Multi-View Vision Architecture, Slice Attention, Soft Loss & Training Engine
+- Phase 5: Vision-Language Contrastive Alignment & Clinical Report Distillation
+- Phase 6: Ensembling, Pathology-Specific Blending, Calibration & Submission Generation
 """
 
 import sys
@@ -24,6 +26,7 @@ from src.models import TARGET_COLS
 from src.mri_preprocessor import PLANES
 from src.test_pipeline import run_tests as run_phase3_tests
 from src.test_models import run_tests as run_phase4_tests
+from src.test_multimodal_ensemble import run_tests as run_phase5_phase6_tests
 from src.report_extractor import extract_study_probabilities
 
 
@@ -110,10 +113,18 @@ def verify_phase4():
     return True
 
 
+def verify_phase5_phase6():
+    print("\n" + "-" * 70)
+    print("[PHASES 5 & 6] Running Multimodal Alignment, Ensembling & Submission Tests...")
+    print("-" * 70)
+    run_phase5_phase6_tests()
+    return True
+
+
 def main():
     start_time = time.time()
     print("=" * 70)
-    print("[SYSTEM HEALTH CHECK] RSNA KNEE MULTIMODAL AI (PHASES 1-4)")
+    print("[SYSTEM HEALTH CHECK] RSNA KNEE MULTIMODAL AI (PHASES 1-6)")
     print("=" * 70)
     print(f"PyTorch Version: {torch.__version__} | CUDA: {torch.cuda.is_available()}")
     print(f"Target Pathologies (12 Classes): {', '.join(TARGET_COLS[:6])}...")
@@ -143,10 +154,16 @@ def main():
         print(f"  [FAIL] Phase 4: {e}")
         results["Phase 4 (Vision Models, Losses & Trainer)"] = False
 
+    try:
+        results["Phase 5 & 6 (Multimodal Alignment, Ensemble & Submission)"] = verify_phase5_phase6()
+    except Exception as e:
+        print(f"  [FAIL] Phase 5 & 6: {e}")
+        results["Phase 5 & 6 (Multimodal Alignment, Ensemble & Submission)"] = False
+
     total_time = time.time() - start_time
 
     print("\n" + "=" * 70)
-    print("[HEALTH CHECK SUMMARY] SUMMARY ACROSS ALL PHASES")
+    print("[HEALTH CHECK SUMMARY] SUMMARY ACROSS ALL 6 PHASES")
     print("=" * 70)
     all_passed = True
     for phase_name, status in results.items():
@@ -157,7 +174,7 @@ def main():
 
     print("-" * 70)
     if all_passed:
-        print(f"[SUCCESS] ALL PIPELINE PHASES ARE OPERATIONAL! (Completed in {total_time:.2f}s)")
+        print(f"[SUCCESS] ALL 6 PIPELINE PHASES ARE FULLY OPERATIONAL! (Completed in {total_time:.2f}s)")
     else:
         print(f"[ERROR] SOME CHECKS FAILED. Please review the trace above.")
     print("=" * 70)
